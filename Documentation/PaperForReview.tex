@@ -1,0 +1,223 @@
+% CVPR 2022 Paper Template
+% based on the CVPR template provided by Ming-Ming Cheng (https://github.com/MCG-NKU/CVPR_Template)
+% modified and extended by Stefan Roth (stefan.roth@NOSPAMtu-darmstadt.de)
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+%\usepackage[review]{cvpr}      % To produce the REVIEW version
+%\usepackage{cvpr}              % To produce the CAMERA-READY version
+\usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
+
+% Include other packages here, before hyperref.
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+
+% It is strongly recommended to use hyperref, especially for the review version.
+% hyperref with option pagebackref eases the reviewers' job.
+% Please disable hyperref *only* if you encounter grave issues, e.g. with the
+% file validation for the camera-ready version.
+%
+% If you comment hyperref and then uncomment it, you should delete
+% ReviewTempalte.aux before re-running LaTeX.
+% (Or just hit 'q' on the first LaTeX run, let it finish, and you
+%  should be clear).
+\usepackage[pagebackref,breaklinks,colorlinks]{hyperref}
+
+
+% Support for easy cross-referencing
+\usepackage[capitalize]{cleveref}
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\Crefname{table}{Table}{Tables}
+\crefname{table}{Tab.}{Tabs.}
+
+
+%%%%%%%%% PAPER ID  - PLEASE UPDATE
+\def\cvprPaperID{*****} % *** Enter the CVPR Paper ID here
+\def\confName{CVPR}
+\def\confYear{2023}
+
+
+\begin{document}
+
+%%%%%%%%% TITLE - PLEASE UPDATE
+\title{6.8300/6.8301: Advances in Computer Vision - Computer-Aided Diagnosis: Computer Vision EKG}
+
+\author{Robert Johnston\\
+Massachusetts Institute of Technology\\
+77 Mass. Ave., Cambridge, MA. 02139\\
+{\tt\small robertej@mit.edu}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+%\and
+%Second Author\\
+%Institution2\\
+%First line of institution2 address\\
+%{\tt\small secondauthor@i2.org}
+}
+\maketitle
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+
+
+Electrocardiograms (ECGs) serve as an indispensable tool in the detection and management of cardiovascular diseases, requiring precise interpretation of complex waveforms to identify various cardiac abnormalities. However, traditional ECG interpretation is a challenging task, susceptible to misinterpretation and diagnostic errors due to the reliance on human expertise. This paper presents a novel approach to improving ECG diagnosis by leveraging computer vision techniques in conjunction with deep learning algorithms. Our proposed method aims to automatically identify and interpret ECG patterns, thereby enhancing diagnostic accuracy, efficiency, and consistency in clinical settings. We discuss the fundamentals of ECGs, highlighting the significance of various waveform components and the challenges associated with conventional interpretation methods. Furthermore, we delve into the application of computer vision and machine learning techniques to overcome these limitations, exploring their potential in revolutionizing ECG diagnostics. The results of our study demonstrate the effectiveness of the proposed approach in reducing diagnostic errors and assisting clinicians in making more informed decisions, ultimately contributing to better patient outcomes and advancements in the field of AI-driven medical innovations.
+
+\end{abstract}
+
+%%%%%%%%% BODY TEXT
+
+
+
+
+\section{Introduction}
+\label{sec:intro}
+Heart dysfunction is the leading cause of death worldwide, making early detection and management of cardiac abnormalities essential for improving patient outcomes. ECGs play a vital role in understanding heart dynamics, as they provide a non-invasive and cost-effective means to assess the heart's electrical activity, rhythm, and overall function. By analyzing the waveform components, such as the P wave, QRS complex, and T wave, as well as the intervals and segments between them, healthcare professionals can identify various cardiac conditions, including arrhythmias, myocardial infarctions, and structural heart diseases.
+
+ECGs offer valuable insights into the heart's conduction system, enabling clinicians to evaluate the rate and regularity of the heartbeat, the presence of any abnormal electrical pathways, and the effects of certain medications or devices on the heart. Additionally, ECGs can reveal signs of ischemia, electrolyte imbalances, and other metabolic disturbances, which may contribute to heart dysfunction. As such, ECGs serve not only as a diagnostic tool but also as a cornerstone in monitoring treatment efficacy and guiding clinical decision-making. Given the substantial global burden of cardiovascular diseases, advancements in ECG interpretation techniques, such as the integration of computer vision and machine learning, hold significant promise for enhancing the accuracy and speed of diagnosis, ultimately leading to better patient care and reduced mortality rates.
+
+In recent years, the integration of artificial intelligence (AI) in medical diagnostics has revolutionized the healthcare industry by enhancing accuracy, speed, and efficiency. Electrocardiograms (ECGs) serve as a crucial tool for detecting various cardiac abnormalities, with their interpretation playing a pivotal role in the management of cardiovascular diseases. This paper explores the application of computer vision, a subfield of AI, to improve ECG diagnosis by leveraging advanced image processing and machine learning techniques. We propose a novel approach that combines deep learning algorithms with computer vision techniques to automatically identify and interpret ECG patterns, thereby reducing diagnostic errors and assisting clinicians in making more informed decisions. This research aims to not only accelerate the diagnostic process but also contribute to the growing body of knowledge on the potential of AI-driven innovations in the medical domain.
+
+Electrocardiograms (ECGs) are non-invasive diagnostic tests that measure the electrical activity of the heart and provide valuable information about its functioning and rhythm. By recording the timing and strength of electrical signals as they travel through the heart, ECGs can help identify various cardiac abnormalities such as arrhythmias, myocardial infarctions, and structural heart diseases. Traditionally, ECG interpretation has relied on the expertise of medical professionals who analyze the waveform components, including P waves, QRS complexes, and T waves, to detect anomalies and make diagnoses.
+
+Despite its importance, ECG interpretation remains a challenging task due to the complexity and variability of the waveforms, as well as the need for a high level of skill and experience. Consequently, misinterpretation and diagnostic errors are not uncommon, potentially leading to inadequate treatment or adverse patient outcomes. In recent years, researchers have sought to improve ECG interpretation by employing various computational techniques, including signal processing, machine learning, and pattern recognition. While these methods have shown promise, there is still a pressing need for more advanced, accurate, and efficient approaches to ECG diagnosis that can complement and augment human expertise.
+
+An electrocardiogram (ECG) is a graphical representation of the heart's electrical activity, which is generated by the coordinated depolarization and repolarization of myocardial cells. The fundamental principle of an ECG is based on the detection and amplification of electrical potentials generated by the heart using surface electrodes placed on the patient's skin. These electrodes are strategically positioned on the limbs and chest to capture electrical signals from various angles, forming a comprehensive view of the heart's function.
+
+During each cardiac cycle, the sinoatrial (SA) node initiates an electrical impulse that triggers the atria's depolarization, represented by the P wave on the ECG. This is followed by a brief pause, the PR interval, allowing the atrioventricular (AV) node to transmit the impulse to the ventricles. The QRS complex, consisting of the Q, R, and S waves, signifies ventricular depolarization, while the T wave corresponds to ventricular repolarization. By examining the amplitude, duration, and morphology of these waveform components, as well as the intervals and segments between them, healthcare professionals can assess the heart's rhythm, rate, and overall function, identifying potential abnormalities and guiding clinical decision-making.
+
+\section{Related Work}
+\label{sec:relwo}
+\subsection{Data Hunger of Scene Text Recogniztion}
+\subsection{Visual Representation Learning}
+
+\section{Proposed Methodology}
+Code is hosted on github \cite{Johnston_Computer_Vision_EKG_2023}
+the approach/algorithm, 
+Framework overview
+\label{sec:meth}
+
+\section{Experiments}
+\label{sec:exp}
+
+\section{Planned Works}
+\label{sec:exp}
+
+
+%\section{Conclusions}
+%\label{sec:conc}
+
+
+
+\clearpage
+
+
+%\iffalse
+\section{HW7 I Report}
+\label{sec:HW7}
+
+\textcolor{red}{1 sketch of abstract}
+
+\textcolor{red}{2 introduction}
+
+
+\textcolor{red}{3 related work}
+
+\textcolor{red}{4 the proposed method (as rigorous as possible)}
+
+\textcolor{red}{5 what you have done so far, such as any data setup and preprocessing steps you have completed, experiments you have run, results you have produced}
+
+\textcolor{red}{6 and finally your plan for the next few weeks. }
+
+The progress report should be around 1 - 2 pages
+
+The goal of the progress report is not to stress you out but to encourage you to work on
+your project and to help you organize your thoughts and results. If you have not run any
+experiments yet and have not produced any results so far, that is okay too but please be sure
+to explain in detail the experiments you are planning on running. Writing a progress report
+can provide you with a clearer picture of the state of your project and help you make plans
+for the remainder of the term. Most importantly, the content of your progress report will
+ultimately form a significant part of your project report and thus will save you time at the
+end of the term. We will review your progress reports and provide you with some feedback.
+
+\section{INSTRUCTIONS}
+\label{sec:instruct}
+
+
+The report should be at least 3 and no more than 5 pages in length, including references.
+
+The report should be in CVPR format. 
+
+It should be structured like a research paper, with sections for 
+
+Introduction,
+
+related work, 
+
+the approach/algorithm, 
+
+experimental results, 
+
+conclusions
+
+references. 
+
+We expect at least 30 hours on the project
+
+
+You should describe and evaluate what you did in your project, which may not necessarily be what you hoped to do originally. 
+
+A small result described and evaluated well will earn more credit than an ambitious result where no aspect was done well. 
+
+Be accurate in describing the problem you tried to solve. 
+
+Explain in detail your approach, and specify any simplifications or assumptions you have taken. 
+
+Also demonstrate the limitations of your approach. When doesn’t it work? Why? What steps would you have taken have you continued working on it? 
+
+Make sure to add references to all related work you reviewed or used.
+
+You are allowed to submit any supplementary material that you think it important to evaluate your work, however we do not guarantee that we will review all of that material, and you should not assume that. The report should be self-contained.
+
+Submission: Submit your report in PDF format on Canvas. Submit any supplementary material as a single zip file named $<$your\_kerberos$>$.zip. Add a README file describing the supplementary content.
+
+Abstract (3\%)
+Introduction (3\%)
+Related work (3\%)
+Approach (and technical correctness) (6\%)
+Experimental results (and technical correctness) (6\%)
+Conclusion (2\%)
+References (1\%)
+Overall clarity of the report (3\%)
+Reproducibility: can the work be reproduced from the information given in the report? (3\%)
+Presentation (10\%)
+
+Many challenges remain for making such algorithms reliable diagnostic
+tools:
+
+2. Learning to classify rare diseases (transfer learning)
+3. Generalizing between clinical sites and scanners (robustness)
+4. Interpretability and explainability (some of the techniques from Miniplaces part 1 are relevant
+here)
+
+Choose a disease or challenge that interests you and build a network that tries to further the
+state of the art.
+References
+
+%\fi
+
+
+%%%%%%%%% REFERENCES
+{\small
+\bibliographystyle{ieee_fullname}
+\bibliography{refs}
+}
+
+\end{document}
