@@ -2,10 +2,13 @@ import wfdb
 import sys
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as plt
+
 from matplotlib.ticker import AutoMinorLocator
+
 import os
 from math import ceil 
 from PIL import Image
@@ -13,7 +16,7 @@ from PIL import Image
 
 def plot_ECG_realistic(
         ecg, #pass as dataframe with columns named as leads
-        ):
+        filename):
 
     style = 'color'
     colors = ['black','black','black','black']#['black','red','blue','green']
@@ -34,7 +37,7 @@ def plot_ECG_realistic(
     # Plotting / Display parameters
     row_height     = 14
     display_factor = 1
-    line_width = .9
+    line_width = .7
     text_size = 9
     fig_size_hori = 1100
     fig_size_verti = 850
@@ -79,8 +82,8 @@ def plot_ECG_realistic(
     ax.set_yticks(np.arange(y_min,y_max,0.5))
     ax.minorticks_on() 
     ax.xaxis.set_minor_locator(AutoMinorLocator(5))
-    ax.grid(which='major', linestyle='-', linewidth=0.4 * display_factor, color=color_major)
-    ax.grid(which='minor', linestyle='-', linewidth=0.4 * display_factor, color=color_minor)
+    ax.grid(which='major', linestyle='-', linewidth=0.35 * display_factor, color=color_major)
+    ax.grid(which='minor', linestyle='-', linewidth=0.35 * display_factor, color=color_minor)
 
     #Set limits
     ax.set_ylim(y_min,y_max)
@@ -127,16 +130,17 @@ def plot_ECG_realistic(
     ax.plot(time_full, ecg['II'].iloc[0:total_samples].values + y_offset[3], linewidth=line_width * display_factor, color='black')
 
  
-    file_name = 'ecg_test.png'
+    file_name = filename+'.png'
     dpi = 300
     layout = 'tight'
-    path = 'DEFAULT_PATH'
+    path = '/home/rober/MLECG/physionet.org/files/ptb-xl/figures/'
+    intermediate_name = 'intermediate_fig.png'
     #plt.ioff()
-    plt.savefig(file_name, dpi = dpi, bbox_inches=layout)
+    plt.savefig(intermediate_name, dpi = dpi, bbox_inches=layout)
     plt.close()
 
     # Open the image file
-    image = Image.open(file_name)
+    image = Image.open(intermediate_name)
 
     width, height = image.size
     print(width, height)
@@ -150,28 +154,73 @@ def plot_ECG_realistic(
     cropped_image = image.crop((left, top, right, bottom))
 
     # Save the cropped image
-    cropped_image.save('cropped.png')
+    cropped_image.save(path+file_name)
     #cropped_image.show()
+    image.close()
+    cropped_image.close()
 
 
 
 # Create main function if name is main:
 if __name__ == '__main__':
 
-    path = '/home/rober/MLECG/physionet.org/files/ptb-xl/1.0.3/'
-    filename = 'records500/20000/20999_hr'
+    dir_path = '/home/rober/MLECG/physionet.org/files/ptb-xl/1.0.3/records500/'
 
-    #print("HELLO")
-    data  = wfdb.rdsamp(path+filename)
-    ecg_data = np.array(data[0])
-    labels = data[1]['sig_name']
 
-    df_ecg = pd.DataFrame(ecg_data, columns=labels)
+    # Get a list of all subdirectories in the directory
+    subdirs = [f.path for f in os.scandir(dir_path) if f.is_dir()]
 
-    df_ecg.to_csv('df_ecg_test.csv')
+    # Print the list of subdirectories
+    print("Subdirectories:")
+    print(len(subdirs))
+    counter = 0
+    exceptions = []
+    subdir_counter = 0
+    for subdir in subdirs:
+        print("on subdir: {}".format(subdir))
+        subdir_counter += 1
+        files = [os.path.join(subdir, f) for f in os.listdir(subdir) if os.path.isfile(os.path.join(subdir, f))]
+        files = [f for f in files if "index" not in os.path.basename(f)]
+        #remove the .hea and .dat from the file name endings:
+        files = [f[:-4] for f in files]
+        #remove the duplicates from the list
+        files = list(dict.fromkeys(files))
+        for file in files:
+            try:
+                filename = os.path.basename(file)
+                print("on file: {}".format(file))
+                print("counter: {}".format(counter))
+                data  = wfdb.rdsamp(file)
+                ecg_data = np.array(data[0])
+                labels = data[1]['sig_name']
+                df_ecg = pd.DataFrame(ecg_data, columns=labels)
+                plot_ECG_realistic(df_ecg,filename)
+                counter += 1
 
-    #df = pd.read_pickle('df_ecg.pkl')
+            except Exception as e:
+                print(f"Exception while getting file size for {file}: {e}")
+                exceptions.append(file)
+        
+        # Print any file names with exceptions
+    if exceptions:
+        print("Files with exceptions:")
+        for exception in exceptions:
+            print(exception)
 
-    #run plot function
-    plot_ECG_realistic(df_ecg)
-    #plot(ecg_data.T)
+
+
+
+
+    # data  = wfdb.rdsamp(path+filename)
+    # ecg_data = np.array(data[0])
+    # labels = data[1]['sig_name']
+
+    # df_ecg = pd.DataFrame(ecg_data, columns=labels)
+
+    # df_ecg.to_csv('df_ecg_test.csv')
+
+    # #df = pd.read_pickle('df_ecg.pkl')
+
+    # #run plot function
+    # plot_ECG_realistic(df_ecg)
+    # #plot(ecg_data.T)
